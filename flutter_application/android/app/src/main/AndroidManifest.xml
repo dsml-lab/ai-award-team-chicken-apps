@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.daruomo.flutter_application">
     <!-- Permissions(geolocator) -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!--詳細な位置を取得するための権限-->>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!--バック-->>
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> 詳細な位置を取得するための権限> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> バック> -->
+    <!-- Permissions(location) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
    <application
         android:label="flutter_application"
         android:name = "android.app.Application"
