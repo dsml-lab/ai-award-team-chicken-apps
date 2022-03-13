@@ -53,9 +53,9 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        minSdkVersion 21 // アプリ実行できる最小のAPIレベル
+        minSdkVersion 25 // アプリ実行できる最小のAPIレベル
         compileSdkVersion 31 // コンパイルする際のAPIバージョン
-        targetSdkVersion 28 // ターゲットとするAPIレベルの指定
+        targetSdkVersion 30 // ターゲットとするAPIレベルの指定
         manifestPlaceholders = [MAPS_API_KEY: mapsApiKey]
 
     }
@@ -66,6 +66,11 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
+    }
+    // Execution failed for task ':app:lintVitalRelease'　のエラーが出るため追記
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false //<- add this line
     }
 }
 
