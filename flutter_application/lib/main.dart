@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart'; // 位置取得のプラグイン
+import 'package:google_fonts/google_fonts.dart'; // フォントススタイルのプラグイン
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +25,8 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        textTheme:
+            GoogleFonts.notoSansJavaneseTextTheme(Theme.of(context).textTheme),
       ),
       home: const MyHomePage(title: 'Flutter Location Map'),
     );
@@ -77,10 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title)),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -101,13 +103,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button get location:',
-            ),
-            Text(
-              '${_location}',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            const Text('You have pushed the button get location:'),
+            Text('${_location}', style: Theme.of(context).textTheme.headline4),
           ],
         ),
       ),
