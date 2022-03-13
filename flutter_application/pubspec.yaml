@@ -29,9 +29,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  geolocator: ^8.2.0 # 位置情報を取得するプラグイン
   google_fonts: ^2.3.1 # 中国風フォントを解消するためのプラグイン
   google_maps_flutter: ^2.1.2 # Google Maps widget プラグイン
+  provider: ^6.0.2 # AttachedWidgetのラッパー
+  location: ^4.3.0 # 位置情報を取得するプラグイン
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
