@@ -1,104 +1,85 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart'; // 位置取得のプラグイン
-import 'package:google_fonts/google_fonts.dart'; // フォントススタイルのプラグイン
-import 'package:google_maps_flutter/google_maps_flutter.dart'; // Google Mapのプラグイン
+import 'package:flutter_application/Provider/location_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        textTheme:
-            GoogleFonts.notoSansJavaneseTextTheme(Theme.of(context).textTheme),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => LocationProvider(),
+          child: GoogleMapsPage(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: GoogleMapsPage(),
       ),
-      home: MyHomePage(title: 'Flutter Google Maps Demo'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class GoogleMapsPage extends StatefulWidget {
+  const GoogleMapsPage({Key? key}) : super(key: key);
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _GoogleMapsPageState createState() => _GoogleMapsPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+class _GoogleMapsPageState extends State<GoogleMapsPage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<LocationProvider>(context, listen: false).initialization();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.purpleAccent,
+          title: Text("Live Tracking Demo"),
+        ),
+        body: googleMapUI());
   }
+}
 
-  Future<void> _goToTheLake() async {
-    LatLng _position = await getLocation();
-    print(
-        "緯度:${_position.latitude.toStringAsExponential(2)} 経度:${_position.longitude.toStringAsExponential(2)}");
-    CameraPosition _kLake = CameraPosition(
-      target: _position,
-      bearing: 192.8334901395799,
-      zoom: 19.151926040649414,
-    );
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
+Widget googleMapUI() {
+  return Consumer<LocationProvider>(
+    builder: (consumerContext, model, child) {
+      if (model.locationPosition != null) {
+        return Column(
+          children: <Widget>[
+            Expanded(
+              child: GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: CameraPosition(
+                  target: model.locationPosition,
+                  zoom: 15,
+                ),
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
+                onMapCreated: (GoogleMapController controller) {},
+              ),
+            )
+          ],
+        );
+      }
 
-  // 現在の位置を取得する関数(
-  Future<LatLng> getLocation() async {
-    // 現在の位置を取得
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high, //位置データの精度
-      forceAndroidLocationManager: true, // エミュレーターの管理権限
-    );
-    return LatLng(position.latitude, position.longitude);
-  }
+      return Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    },
+  );
 }
