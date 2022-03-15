@@ -44,8 +44,9 @@ class LocationProvider with ChangeNotifier {
         currentlocation.latitude!.toDouble(),
         currentlocation.longitude!.toDouble(),
       );
+      print(
+          "緯度:${currentlocation.latitude!.toStringAsExponential(3)}/経度${currentlocation.longitude!.toStringAsExponential(3)}");
     });
-    // print(_locationPosition);
     notifyListeners();
   }
 }
