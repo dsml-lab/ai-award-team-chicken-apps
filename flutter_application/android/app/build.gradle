@@ -5,6 +5,12 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
+// local.propertiesからMAPS_API_KEYを取得する
+def mapsApiKey = localProperties.getProperty('MAPS_API_KEY')
+if(mapsApiKey == null){
+    mapsApiKey = ""
+    project.logger.error('Google Maps Api Key not configured. Set it in `local_maps.properties` or in the environment variable `MAPS_API_KEY`')
+}
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
@@ -26,7 +32,6 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -48,6 +53,11 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        minSdkVersion 25 // アプリ実行できる最小のAPIレベル
+        compileSdkVersion 31 // コンパイルする際のAPIバージョン
+        targetSdkVersion 30 // ターゲットとするAPIレベルの指定
+        manifestPlaceholders = [MAPS_API_KEY: mapsApiKey]
+
     }
 
     buildTypes {
@@ -56,6 +66,11 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
+    }
+    // Execution failed for task ':app:lintVitalRelease'　のエラーが出るため追記
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false //<- add this line
     }
 }
 

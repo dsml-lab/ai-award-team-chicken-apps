@@ -1,9 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.daruomo.flutter_application">
+    <!-- Permissions(geolocator) -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> 詳細な位置を取得するための権限> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> バック> -->
+    <!-- Permissions(location) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
    <application
         android:label="flutter_application"
-        android:name="${applicationName}"
+        android:name = "android.app.Application"
         android:icon="@mipmap/ic_launcher">
+         <!--SdkVersionが20以上なので、android.app.Applicationとする（android:name = "${applicationName}"）-->
+        <!--Google Map APIの設定-->>
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                    android:value="${MAPS_API_KEY}"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
