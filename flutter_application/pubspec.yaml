@@ -33,6 +33,10 @@ dependencies:
   google_maps_flutter: ^2.1.2 # Google Maps widget プラグイン
   provider: ^6.0.2 # AttachedWidgetのラッパー
   location: ^4.3.0 # 位置情報を取得するプラグイン
+  adobe_xd: ^2.0.1 # Adobe XD -> Flutter のプラグイン
+  firebase_core: ^1.13.1 # Firebaseの初期化
+  firebase_auth: ^3.3.11 # Firebaseの認証
+  google_sign_in: ^5.2.4 # Googleサインインを利用
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,10 +64,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
+  assets:
+    - assets/
+    - images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
