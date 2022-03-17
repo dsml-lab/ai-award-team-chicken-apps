@@ -19,9 +19,15 @@ samples, guidance on mobile development, and a full API reference.
 [google_fonts 2.3.1](https://pub.dev/packages/google_fonts)
 [provider 6.0.2](https://pub.dev/packages/provider)
 [location 4.3.0](https://pub.dev/packages/location)
+[google_maps_flutter 2.1.2](https://pub.dev/packages/google_maps_flutter)
+[adobe_xd 2.0.1](https://pub.dev/packages/adobe_xd)
+[firebase_core 1.13.1](https://pub.dev/packages/firebase_core)
+[firebase_auth 3.3.11](https://pub.dev/packages/firebase_auth)
+[google_sign_in 5.2.4](https://pub.dev/packages/google_sign_in)
 
 
 ## 参考文献
 [スマホ機能編2:位置情報(GeoLocation)](https://zenn.dev/kazutxt/books/flutter_practice_introduction/viewer/smartphone_geolocation)
 [Flutter Google Maps and Live Location Tracking](https://aayushbajaj505.medium.com/flutter-google-maps-and-live-location-tracking-83bb8224032c)
 [Flutter Tutorial - Google Map with Live Location Tracking](https://github.com/techwithsam/google-map-flutter)
+[Flutterを使ったGoogleサインイン＆Firebase認証](https://blog.codemagic.io/firebase-authentication-google-sign-in-using-flutter-jpn/)
