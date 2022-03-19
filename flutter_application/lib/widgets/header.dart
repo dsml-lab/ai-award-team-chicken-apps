@@ -1,16 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/custom_colors.dart';
 import 'package:flutter_application/screens/sign_in_screen.dart';
 import 'package:flutter_application/utils/authentication.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // 認証が終わったとの画面
 class AppBarHeder extends StatefulWidget with PreferredSizeWidget {
-  const AppBarHeder({Key? key, required User user})
-      : _user = user,
-        super(key: key);
-  final User _user;
-
+  const AppBarHeder({Key? key}) : super(key: key);
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
@@ -19,14 +15,22 @@ class AppBarHeder extends StatefulWidget with PreferredSizeWidget {
 }
 
 class _AppBarHeder extends State<AppBarHeder> {
-  late User _user;
   bool _isSigningOut = false;
+  String? _photoURL;
+
+  _getPrefItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 以下の「counter」がキー名。見つからなければ０を返す
+    setState(() {
+      _photoURL = prefs.getString('photoURL');
+    });
+  }
 
   Route _routeToSignInScreen() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => SignInScreen(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(-1.0, 0.0);
+        var begin = const Offset(-1.0, 0.0);
         var end = Offset.zero;
         var curve = Curves.ease;
 
@@ -43,14 +47,14 @@ class _AppBarHeder extends State<AppBarHeder> {
 
   @override
   void initState() {
-    _user = widget._user;
-
+    _getPrefItems();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       title: SizedBox(
         height: kToolbarHeight,
@@ -61,12 +65,12 @@ class _AppBarHeder extends State<AppBarHeder> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
-                child: _user.photoURL != null
+                child: _photoURL != null
                     ? ClipOval(
                         child: Material(
                           color: CustomColors.firebaseGrey.withOpacity(0.3),
                           child: Image.network(
-                            _user.photoURL!,
+                            _photoURL!,
                           ),
                         ),
                       )
@@ -96,12 +100,12 @@ class _AppBarHeder extends State<AppBarHeder> {
               FittedBox(
                 fit: BoxFit.fitHeight,
                 child: _isSigningOut
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       )
                     : IconButton(
                         // 表示アイコン
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.logout,
                         ),
                         // サイズ
