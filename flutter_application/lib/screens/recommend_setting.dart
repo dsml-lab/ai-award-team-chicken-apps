@@ -14,52 +14,41 @@ class RecommendSettingScreen extends StatefulWidget {
 class _RecommendSettingScreen extends State<RecommendSettingScreen> {
   @override
   Widget build(BuildContext context) {
+    // 画面のサイズを取得
+    var _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: const AppBarHeder(),
+      // Stack(2つのContainerを重ねる)
       body: Stack(
         children: <Widget>[
+          // Container(背景指定のみ)
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('images/map.png'), fit: BoxFit.cover),
             ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 25, right: 25, top: 50, bottom: 50),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  TimeTextField(),
-                  SizedBox(height: 40),
-                  KindCheckBoxList(),
-                  SizedBox(height: 40),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 5, right: 5, top: 10, bottom: 10),
-                    child: ElevatedButton(
-                      child: const Text("Submit"),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const RecommendMap();
-                            },
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.grey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        textStyle: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
+          // Container(複数のWidgetを一括で中心にまとめる)
+          Center(
+            child: Container(
+              height: _screenSize.height * 0.9, // 高さの指定
+              width: _screenSize.width * 0.9, // 幅の指定
+              padding: const EdgeInsets.only(
+                  left: 10, right: 10, top: 25, bottom: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    TimeTextField(),
+                    SizedBox(height: 40),
+                    KindCheckBoxList(),
+                    SizedBox(height: 40),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: SubmitNextScreen(context),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -67,4 +56,29 @@ class _RecommendSettingScreen extends State<RecommendSettingScreen> {
       ),
     );
   }
+}
+
+// 次の画面に移動するためのボタン
+// ignore: non_constant_identifier_names
+ElevatedButton SubmitNextScreen(BuildContext context) {
+  return ElevatedButton(
+    child: const Text("OK",
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.bold)),
+    style: ElevatedButton.styleFrom(
+      primary: Colors.grey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    ),
+    onPressed: () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return const RecommendMap();
+          },
+        ),
+      );
+    },
+  );
 }
