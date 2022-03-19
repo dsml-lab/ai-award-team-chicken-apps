@@ -1,65 +1,52 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application/res/custom_colors.dart';
 import 'package:flutter_application/widgets/header.dart';
+import 'package:flutter_application/widgets/mode_button.dart';
 
 // モード選択
 class UserInfoScreen extends StatefulWidget {
-  const UserInfoScreen({Key? key, required User user})
-      : _user = user,
-        super(key: key);
-  final User _user;
+  const UserInfoScreen({Key? key}) : super(key: key);
   @override
   _UserInfoScreenState createState() => _UserInfoScreenState();
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
-  late User _user;
-  bool _isSigningOut = false;
+  // ignore: non_constant_identifier_names
+  String normal_explanation = '現在地に近い3つの隠れた魅力を表示します。';
+  // ignore: non_constant_identifier_names
+  String recommend_explanation =
+      '散策時間に合うあなたに最適な目的地を推薦し、道中の隠れた魅力をチェックポイントとして表示します。';
 
   @override
   void initState() {
-    _user = widget._user;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarHeder(user: _user),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('images/town.png'), fit: BoxFit.fill),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+      appBar: const AppBarHeder(),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('images/town.png'), fit: BoxFit.cover),
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 50, right: 50, top: 50, bottom: 50),
             child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Row(),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Adventure",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          color: CustomColors.title,
-                          fontSize: 55,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                ModeButton(
+                    'お散歩モード', 'AdobeStock_440190456.jpeg', normal_explanation),
+                ModeButton('推薦モード', 'AdobeStock_422744355.jpeg',
+                    recommend_explanation),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
