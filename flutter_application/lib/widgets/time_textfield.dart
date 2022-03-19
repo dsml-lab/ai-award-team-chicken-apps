@@ -9,48 +9,123 @@ class TimeTextField extends StatefulWidget {
 }
 
 class _TimeTextField extends State<TimeTextField> {
-  String? time;
+  // ignore: non_constant_identifier_names
+  int _place_time = 0; // 目的地までの時間
+  // ignore: non_constant_identifier_names
+  int _detour_time = 0; // 寄り道にかける所要時間
+  List<DropdownMenuItem<int>> menuItems = []; // 時間の間隔
+
+  @override
+  void initState() {
+    super.initState();
+    _dropdownlist();
+  }
+
+  void _dropdownlist() {
+    menuItems = [];
+    for (var i = 0; i <= 60; i += 10) {
+      menuItems.add(DropdownMenuItem(
+          alignment: Alignment.center,
+          child: Text(
+            i.toString(),
+          ),
+          value: i));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // 画面のサイズを取得
+    var _screenSize = MediaQuery.of(context).size;
     return Material(
       elevation: 20.0,
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '目的地までの時間(分)を入力してください',
-              style: TextStyle(color: Colors.grey[700], fontSize: 15),
-            ),
-            SizedBox(height: 5),
-            TextField(
-              // enabled: true,
-              // 入力数
-              maxLength: 3,
-              style: TextStyle(color: Colors.black, fontSize: 20),
-              maxLines: 1,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.face),
-                border: InputBorder.none,
-                labelText: '時間(分) *',
-                hintText: '000',
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(width: 1, color: Colors.grey),
+      child: Container(
+        // 高さの指定
+        width: _screenSize.width * 0.9, // 幅の指定
+        child: Padding(
+          padding:
+              const EdgeInsets.only(top: 10, bottom: 5, left: 10, right: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.settings,
+                      size: 20,
+                      color: Colors.grey[700],
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      '散策時間を設定します',
+                      style: TextStyle(color: Colors.grey[700], fontSize: 18),
+                    ),
+                  ],
                 ),
               ),
-              onChanged: (text) {
-                time = text;
-                print("Time:$time");
-              },
-              // autofocus: true,
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 30, right: 30, top: 10, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                          labelText: "目的地の時間(分)",
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.bold),
+                        ),
+                        isExpanded: true,
+                        style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+                        value: _place_time,
+                        items: menuItems,
+                        onChanged: (newValue) async {
+                          setState(
+                            () {
+                              _place_time = newValue as int;
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    Icon(Icons.add, color: Colors.grey[700], size: 30),
+                    SizedBox(
+                      width: 100,
+                      child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                          labelText: "寄り道の時間(分)",
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.bold),
+                        ),
+                        isExpanded: true,
+                        style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+                        value: _detour_time,
+                        items: menuItems,
+                        onChanged: (newValue) async {
+                          setState(
+                            () {
+                              _detour_time = newValue as int;
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
