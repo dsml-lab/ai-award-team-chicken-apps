@@ -62,11 +62,12 @@ class _RecommendSettingScreen extends State<RecommendSettingScreen> {
 // ignore: non_constant_identifier_names
 ElevatedButton SubmitNextScreen(BuildContext context) {
   return ElevatedButton(
-    child: const Text("OK",
+    child: const Text("Submit",
         style: TextStyle(
             fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.bold)),
     style: ElevatedButton.styleFrom(
-      primary: Colors.grey,
+      elevation: 20,
+      primary: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
