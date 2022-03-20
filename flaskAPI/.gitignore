@@ -1,2 +1,7 @@
 /auth/ai-award-team-chicken-firebase-adminsdk.json
 /functions/__pycache__
+/auth/apikey.py
+/auth/__pycache__
+/data/mapPlaceID.csv
+/data/place
+.DS_Store
