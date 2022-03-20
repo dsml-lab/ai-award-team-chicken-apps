@@ -32,3 +32,4 @@ samples, guidance on mobile development, and a full API reference.
 [Flutter Tutorial - Google Map with Live Location Tracking](https://github.com/techwithsam/google-map-flutter)
 [Flutterを使ったGoogleサインイン＆Firebase認証](https://blog.codemagic.io/firebase-authentication-google-sign-in-using-flutter-jpn/)
 [Flutter で Google Map に現在位置を表示する](https://qiita.com/kurararara/items/78709987460024b72b04)
+[【Flutter】 全画面覆うようにローディングを表示する](https://qiita.com/bon_ninax/items/331eabfdd2cab9efca96)
