@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/widgets/header.dart';
 import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // モード選択
 class RecommendMap extends StatefulWidget {
@@ -20,12 +22,23 @@ class _RecommendMap extends State<RecommendMap> {
   LocationData? _currentLocation;
   // 現在位置の監視状況
   StreamSubscription? _locationChangedListen;
+  // レスポンス結果を取得
+  String _response = '';
+
+  void _getPrefItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _response = prefs.getString('response') as String;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     // 現在位置の取得
     _getLocation();
+    // レスポンス結果を取得
+    _getPrefItems();
     // 現在位置の変化を監視
     _locationChangedListen =
         _locationService.onLocationChanged.listen((LocationData result) async {
@@ -60,7 +73,7 @@ class _RecommendMap extends State<RecommendMap> {
               width: _screenSize.width * 0.9, // 幅の指定
               padding: const EdgeInsets.only(
                   left: 10, right: 10, top: 25, bottom: 10),
-              child: Text('Hello'),
+              child: Text(_response),
             ),
           ),
         ],
