@@ -40,9 +40,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 ModeButton(
-                    'お散歩モード', 'AdobeStock_440190456.jpeg', normal_explanation),
-                ModeButton('推薦モード', 'AdobeStock_422744355.jpeg',
-                    recommend_explanation),
+                    'お散歩モード', 'AdobeStock_440190456.png', normal_explanation),
+                ModeButton(
+                    '推薦モード', 'AdobeStock_422744355.png', recommend_explanation),
               ],
             ),
           ),
