@@ -18,9 +18,10 @@ ElevatedButton SubmitNextScreen(BuildContext context) {
   int? _detour_time; // 寄り道にかける所要時間
   Map<String, bool> genre = {}; // 目的地のジャンル結果を格納
   String _userUid; // ユーザのID
+  String result;
 
   // APIに選択した情報を送り目的地とスポットを取得する
-  Future<void> _pushAPI() async {
+  Future<String> _pushAPI() async {
     // Firestoreのユーザのドキュメントを取得する
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _userUid = prefs.getString('userUid') as String;
@@ -47,13 +48,19 @@ ElevatedButton SubmitNextScreen(BuildContext context) {
     double _longitude = _currentLocation.longitude as double;
     // サーバーにデータを送り目的地と道中のスポットを取得する
     Uri url = Uri.parse('http://10.0.2.2:5000/recommend');
-    var headers = {"Content-Type": "application/json"};
+    var headers = {"Content-Type": "application/json", "charset": "utf8"};
     var requestBody = json.encode(
         {"user": _userUid, "latitude": _latitude, "longitude": _longitude});
     http.Response response =
         await http.post(url, headers: headers, body: requestBody);
-    // レスポンス結果を状態管理する
-    await prefs.setString('response', json.encode(response.body));
+    String _content;
+    if (response.statusCode != 200) {
+      int statusCode = response.statusCode;
+      _content = "Failed to post $statusCode";
+    } else {
+      _content = response.body;
+    }
+    return _content;
   }
 
   return ElevatedButton(
@@ -69,12 +76,12 @@ ElevatedButton SubmitNextScreen(BuildContext context) {
     ),
     onPressed: () async {
       showProgressDialog(context);
-      await _pushAPI();
+      result = await _pushAPI();
       Navigator.of(context).pop();
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return const RecommendMap();
+            return RecommendMap(result);
           },
         ),
       );
