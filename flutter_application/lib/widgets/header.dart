@@ -89,7 +89,7 @@ class _AppBarHeder extends State<AppBarHeder> {
                       ),
               ),
               Text(
-                'Adventure Hometown',
+                'みりょくどおり',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   color: CustomColors.header,
