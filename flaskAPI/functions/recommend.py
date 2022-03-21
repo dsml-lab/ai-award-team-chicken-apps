@@ -35,8 +35,8 @@ def recommend_function(request):
     total_time = (db_recommend["detour_time"]+db_recommend["place_time"])*60  # 目的地までの時間 + 寄り道時間
     result = decision_spots(destination=destination, db=db_spots, origin=origin, total_time=total_time)
     # Jsonで返却
-    result = json.dumps(result, ensure_ascii=False)
     print(result)
+    result = json.dumps(result, ensure_ascii=False)
     return result
 
 
@@ -118,25 +118,25 @@ def decision_spots(destination: dict, db: object, origin: str, total_time: int):
         check2gole_time = google_place_distance(origin=check_point, destination=gole_point)  # 中間点->目的地
         progress_time = progress_time + start2check_time + check2gole_time
         # 結果を格納
-        result[i] = {}
-        result[i]["name"] = info["name"]
-        result[i]["lat"] = info["lat"]
-        result[i]["lng"] = info["lng"]
+        result[str(i)] = {}
+        result[str(i)]["name"] = info["name"]
+        result[str(i)]["lat"] = info["lat"]
+        result[str(i)]["lng"] = info["lng"]
         result["time"] = progress_time
         # 経過時間が指定された合計時間を超えたときにブレイク
         if progress_time > total_time:
             # 「合計時間を経過時間が超えた時の差分」が「合計時間を経過時間が超える前の差分」より大きいときに削除
             before_progress = progress_time - start2check_time - check2gole_time
             if abs(progress_time - total_time) > abs(before_progress - total_time):
-                del result[i]
+                del result[str(i)]
                 result["time"] = before_progress
             break
     # 目的地の結果を格納
     length = len(result)
-    result[length-1] = {}
-    result[length-1]["name"] = destination["name"]
-    result[length-1]["lat"] = destination["lat"]
-    result[length-1]["lng"] = destination["lng"]
+    result[str(length-1)] = {}
+    result[str(length-1)]["name"] = destination["name"]
+    result[str(length-1)]["lat"] = destination["lat"]
+    result[str(length-1)]["lng"] = destination["lng"]
     return result
 
 
