@@ -1,6 +1,8 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application/res/custom_text.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class KindCheckBoxList extends StatefulWidget {
   const KindCheckBoxList({Key? key}) : super(key: key);
@@ -12,16 +14,7 @@ class KindCheckBoxList extends StatefulWidget {
 class _KindCheckBoxList extends State<KindCheckBoxList> {
   ScrollController _scrollController = ScrollController();
 
-  final Map _checklist = {
-    0: {'title': '観光地', 'state': false, 'path': 'tourist_spot.png'},
-    1: {'title': 'フォトスポット', 'state': false, 'path': 'photo_spot.png'},
-    2: {'title': '地元グルメ', 'state': false, 'path': 'gourmand.png'},
-    3: {'title': 'カフェ', 'state': false, 'path': 'cafe.png'},
-    4: {'title': '観光地', 'state': false, 'path': 'tourist_spot.png'},
-    5: {'title': 'フォトスポット', 'state': false, 'path': 'photo_spot.png'},
-    6: {'title': '地元グルメ', 'state': false, 'path': 'gourmand.png'},
-    7: {'title': 'カフェ', 'state': false, 'path': 'cafe.png'},
-  };
+  final Map _checklist = CustomText.genreOfDestination;
 
   CheckboxListTile _checkBoxListTile(int key) {
     return CheckboxListTile(
@@ -38,6 +31,7 @@ class _KindCheckBoxList extends State<KindCheckBoxList> {
       value: _checklist[key]["state"],
       onChanged: (e) {
         _handleCheckbox(key);
+        _setPrefItems();
       },
     );
   }
@@ -46,6 +40,13 @@ class _KindCheckBoxList extends State<KindCheckBoxList> {
     setState(() {
       _checklist[i]['state'] = !_checklist[i]['state'];
     });
+  }
+
+  _setPrefItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    for (int i in _checklist.keys) {
+      prefs.setBool(_checklist[i]['title'], _checklist[i]['state']);
+    }
   }
 
   @override

@@ -16,11 +16,13 @@ class GoogleSignInButton extends StatefulWidget {
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isSigningIn = false;
   String? _photoURL = '';
+  String? _userUid = '';
 
-  _setPrefItems() async {
+  void _setPrefItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // 以下の「counter」がキー名。
     prefs.setString('photoURL', _photoURL!);
+    prefs.setString('userUid', _userUid!);
   }
 
   @override
@@ -54,6 +56,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   User? user =
                       await Authentication.signInWithGoogle(context: context);
                   _photoURL = user?.photoURL!;
+                  _userUid = user?.uid;
                   _setPrefItems();
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => UserInfoScreen()));

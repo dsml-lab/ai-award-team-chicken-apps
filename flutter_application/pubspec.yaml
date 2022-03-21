@@ -38,6 +38,10 @@ dependencies:
   firebase_auth: ^3.3.11 # Firebaseの認証
   google_sign_in: ^5.2.4 # Googleサインインを利用
   shared_preferences: ^2.0.13 # 状態管理
+  cloud_firestore: ^3.1.10 # firebase storeを利用
+  http: ^0.13.4 # http通信
+  geolocator: ^8.2.0 # 距離計算
+  flutter_tts: ^3.3.3 # TTS
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

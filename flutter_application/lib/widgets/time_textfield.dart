@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Googleのサインボタン
 class TimeTextField extends StatefulWidget {
@@ -14,6 +15,12 @@ class _TimeTextField extends State<TimeTextField> {
   // ignore: non_constant_identifier_names
   int _detour_time = 0; // 寄り道にかける所要時間
   List<DropdownMenuItem<int>> menuItems = []; // 時間の間隔
+
+  _setPrefItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('place_time', _place_time);
+    prefs.setInt('detour_time', _detour_time);
+  }
 
   @override
   void initState() {
@@ -92,6 +99,7 @@ class _TimeTextField extends State<TimeTextField> {
                           setState(
                             () {
                               _place_time = newValue as int;
+                              _setPrefItems();
                             },
                           );
                         },
@@ -116,6 +124,7 @@ class _TimeTextField extends State<TimeTextField> {
                           setState(
                             () {
                               _detour_time = newValue as int;
+                              _setPrefItems();
                             },
                           );
                         },

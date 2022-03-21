@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/screens/recommend_map.dart';
 import 'package:flutter_application/widgets/header.dart';
 import 'package:flutter_application/widgets/kind_checkboxlist.dart';
+import 'package:flutter_application/widgets/submit_api_button.dart';
 import 'package:flutter_application/widgets/time_textfield.dart';
 
 // モード選択
@@ -56,30 +56,4 @@ class _RecommendSettingScreen extends State<RecommendSettingScreen> {
       ),
     );
   }
-}
-
-// 次の画面に移動するためのボタン
-// ignore: non_constant_identifier_names
-ElevatedButton SubmitNextScreen(BuildContext context) {
-  return ElevatedButton(
-    child: const Text("Submit",
-        style: TextStyle(
-            fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.bold)),
-    style: ElevatedButton.styleFrom(
-      elevation: 20,
-      primary: Colors.blue,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-    ),
-    onPressed: () {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return const RecommendMap();
-          },
-        ),
-      );
-    },
-  );
 }
