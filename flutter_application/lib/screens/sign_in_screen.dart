@@ -18,7 +18,7 @@ class _SignInScreenState extends State<SignInScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('images/title.png'), fit: BoxFit.fill),
+              image: AssetImage('images/title2.png'), fit: BoxFit.fill),
         ),
         child: SafeArea(
           child: Padding(
@@ -30,27 +30,31 @@ class _SignInScreenState extends State<SignInScreen> {
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    // mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Adventure",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          color: CustomColors.title,
-                          fontSize: 55,
-                          fontWeight: FontWeight.w800,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 100, bottom: 5),
+                        child: Text(
+                          "みりょくどおり",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: CustomColors.title,
+                            backgroundColor: Colors.yellow[50],
+                            fontSize: 55,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
-                      Text(
-                        'Hometown',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          color: CustomColors.title,
-                          fontSize: 55,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 150),
+                      // Text(
+                      //   'Hometown',
+                      //   style: TextStyle(
+                      //     fontFamily: 'Poppins',
+                      //     color: CustomColors.title,
+                      //     fontSize: 55,
+                      //     fontWeight: FontWeight.w800,
+                      //   ),
+                      // ),
+                      const SizedBox(height: 100),
                       Flexible(
                           flex: 1,
                           child: Image.asset('assets/pin.png', height: 150)),
