@@ -1,4 +1,5 @@
 [![アプリタイトル](./image/アプリロゴ.png)](https://youtu.be/KuQwmeWf6hQ)
+
 ``画像をクリックするとアプリの説明(youtube)を聞くことができます``
 
 ## 「**みりょくどおり**」とは？？
@@ -23,11 +24,7 @@ Googleアカウントでログインできるためユーザ登録が不要で�
 ※3：デモ版ではGoogleが提供しているPlaceAPIから登録店舗のレビュー情報を取得しFlutterのプラグイン(flutter_tts)を用いて音声化しています。
 ```
 
-<img src="/image/タイトル画面.png" width="150px">
-
-<img src="/image/モード選択画面.png" width="150px">
-
-<img src="/image/レビュ画面.png" width="150px">
+<img src="/image/タイトル画面.png" width="150px"><img src="/image/モード選択画面.png" width="150px"><img src="/image/レビュ画面.png" width="150px">
 
 ### **みりょくどおり**が持つ2つのモード
 
