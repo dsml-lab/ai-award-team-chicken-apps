@@ -1,4 +1,4 @@
-[![アプリタイトル](./image/アプリロゴ.png)](https://youtu.be/KuQwmeWf6hQ)
+[![アプリタイトル](../image/アプリロゴ.png)](https://youtu.be/KuQwmeWf6hQ)
 
 ``画像をクリックするとアプリの説明(youtube)を聞くことができます``
 
