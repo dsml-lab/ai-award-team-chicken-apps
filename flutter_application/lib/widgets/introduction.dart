@@ -26,13 +26,11 @@ class _Introduction extends State<Introduction> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       width: MediaQuery.of(context).size.width * 0.6,
-      child: Expanded(
-        child: PageView.builder(
-          itemBuilder: (context, index) {
-            return _pages[index];
-          },
-          itemCount: _pages.length,
-        ),
+      child: PageView.builder(
+        itemBuilder: (context, index) {
+          return _pages[index];
+        },
+        itemCount: _pages.length,
       ),
     );
   }

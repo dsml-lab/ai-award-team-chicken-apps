@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application/screens/recommend_setting.dart';
 import 'package:flutter_application/screens/stroll_map.dart';
 import 'package:flutter_application/screens/sign_in_screen.dart';
+import 'package:flutter_application/utils/request_api.dart';
+import 'package:flutter_application/widgets/loading_widght.dart';
+import 'package:location/location.dart';
 
 // ignore: must_be_immutable
 class ModeDialog extends StatefulWidget {
@@ -15,13 +20,7 @@ class ModeDialog extends StatefulWidget {
 
 class _ModeDialog extends State<ModeDialog> {
   Route<dynamic> _routeToMapScreen(String title) {
-    if (title == "お散歩モード") {
-      return MaterialPageRoute(
-        builder: (context) {
-          return const StrollMap();
-        },
-      );
-    } else if (title == "推薦モード") {
+    if (title == "推薦モード") {
       return MaterialPageRoute(
         builder: (context) {
           return const RecommendSettingScreen();
@@ -34,6 +33,20 @@ class _ModeDialog extends State<ModeDialog> {
         },
       );
     }
+  }
+
+  Future<String> _pushAPI() async {
+    // 現在地を取得
+    Location _locationService = Location();
+    LocationData _currentLocation = await _locationService.getLocation();
+    double _latitude = _currentLocation.latitude as double;
+    double _longitude = _currentLocation.longitude as double;
+    var requestBody = json.encode({
+      "latitude": _currentLocation.latitude,
+      "longitude": _currentLocation.longitude
+    });
+    return requestAPI(api: 'stroll', requestBody: requestBody);
+    ;
   }
 
   @override
@@ -71,8 +84,21 @@ class _ModeDialog extends State<ModeDialog> {
               // OKボタン
               ElevatedButton(
                 child: const Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).push(_routeToMapScreen(widget.title));
+                onPressed: () async {
+                  if (widget.title == "お散歩モード") {
+                    showProgressDialog(context);
+                    String result = await _pushAPI();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return StrollMap(result);
+                        },
+                      ),
+                    );
+                  } else {
+                    Navigator.of(context).push(_routeToMapScreen(widget.title));
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.blue,
