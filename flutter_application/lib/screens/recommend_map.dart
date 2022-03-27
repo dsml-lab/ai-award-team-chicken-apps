@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application/widgets/header.dart';
 import 'package:flutter_application/widgets/introduction.dart';
 import 'package:flutter_application/res/apikey.dart';
+import 'package:flutter_application/widgets/loading_widght.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -23,9 +24,9 @@ class _RecommendMap extends State<RecommendMap> {
   final Location _locationService = Location(); // ロケーションのインスタンス作成
   final Completer<GoogleMapController> _controller = Completer(); // コントローラー
 
-  String _outline = ""; // お店の概要
-  Map<String, dynamic> _image = {}; // 写真
-  Map<String, dynamic> _review = {}; // レビュー情報
+  // String _outline = ""; // お店の概要
+  // Map<String, dynamic> _image = {}; // 写真
+  // Map<String, dynamic> _review = {}; // レビュー情報
   int _target = 0; // 表示するスポットのID
   int _maxDistance = 20; // 次のスポットに移る際の距離
   double? _distanceInMeters = null; // 現在地とスポットの距離
@@ -132,15 +133,13 @@ class _RecommendMap extends State<RecommendMap> {
   }
 
   // FireStoreからデータを取得する
-  Future<void> get_target_spots() async {
+  Future<Map<String, dynamic>> get_target_spots() async {
     DocumentSnapshot doc = await _db
         .collection('spots')
         .doc(_response[_target.toString()]["name"])
         .get();
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    _outline = data["outline"];
-    _image = data["image"];
-    _review = data["reviews"];
+    return data;
   }
 
   // 次のスポットまでの距離を返す
@@ -234,17 +233,19 @@ class _RecommendMap extends State<RecommendMap> {
               width: 3),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {
-          _spotShowDialog();
+        onPressed: () async {
+          showProgressDialog(context);
+          Map<String, dynamic> data = await get_target_spots();
+          Navigator.of(context).pop();
+          await _spotShowDialog(data);
         },
       ),
     );
   }
 
   // 目的地の情報を表示する
-  Future _spotShowDialog() {
+  Future _spotShowDialog(Map<String, dynamic> data) {
     // F
-    get_target_spots();
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -270,7 +271,8 @@ class _RecommendMap extends State<RecommendMap> {
                   color: Colors.grey[700]),
             ),
           ),
-          content: Introduction(_outline, _image, _review),
+          content:
+              Introduction(data["outline"], data["image"], data["reviews"]),
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 10, bottom: 10, left: 10),
