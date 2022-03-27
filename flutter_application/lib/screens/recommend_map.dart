@@ -4,9 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/widgets/header.dart';
 import 'package:flutter_application/widgets/introduction.dart';
+import 'package:flutter_application/res/apikey.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 // モード選択
 class RecommendMap extends StatefulWidget {
@@ -32,6 +34,8 @@ class _RecommendMap extends State<RecommendMap> {
   LocationData? _currentLocation; // 現在位置
   BitmapDescriptor? pinDestinationIcon; // 目的地のマーカ
   BitmapDescriptor? pinSpotsIcon; // スポットのマーカ
+  PolylinePoints polylinePoints = PolylinePoints();
+  Map<PolylineId, Polyline> polylines = {};
 
   // APIのレスポンス結果をMapで受け取る
   Future<void> string2Map() async {
@@ -66,6 +70,52 @@ class _RecommendMap extends State<RecommendMap> {
         calculationDistance();
       });
     });
+  }
+
+  // 現在地から目的地までのルートを求める
+  Future<void> _getPolyLine() async {
+    // 出発点
+    double _originLatitude = _currentLocation!.latitude as double;
+    double _originLongitude = _currentLocation!.longitude as double;
+    // 到達点
+    double _destLatitude;
+    double _destLongitude;
+    _response.forEach(
+      (key, value) async {
+        if (key != "time") {
+          _destLatitude = value["lat"];
+          _destLongitude = value["lng"];
+          LatLng start = LatLng(_originLatitude, _originLongitude);
+          LatLng finish = LatLng(_destLatitude, _destLongitude);
+          PolylineId id = PolylineId(value["name"]);
+          polylines[id] = await _getRoutePolyline(start, finish, id);
+          _originLatitude = _destLatitude;
+          _originLongitude = _destLongitude;
+        }
+      },
+    );
+  }
+
+  Future<Polyline> _getRoutePolyline(
+      LatLng start, LatLng finish, PolylineId id) async {
+    polylinePoints = PolylinePoints();
+    List<LatLng> polylineCoordinates = [];
+    PointLatLng startPoint = PointLatLng(start.latitude, start.longitude);
+    PointLatLng finishPoint = PointLatLng(finish.latitude, finish.longitude);
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        distanceAPI, startPoint, finishPoint,
+        travelMode: TravelMode.walking);
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    Polyline polyline = Polyline(
+        width: 5,
+        polylineId: id,
+        color: Colors.lightBlue,
+        points: polylineCoordinates);
+    return polyline;
   }
 
   // 距離計算（メートル）
@@ -112,6 +162,7 @@ class _RecommendMap extends State<RecommendMap> {
     Future(() async {
       await getLocation();
       _locationChangedListen = await observeLocation();
+      await _getPolyLine();
     });
     setSpotsMapPin();
     setDestinationMapPin();
@@ -277,6 +328,7 @@ class _RecommendMap extends State<RecommendMap> {
     } else {
       return GoogleMap(
         mapType: MapType.normal,
+        polylines: Set<Polyline>.of(polylines.values),
         markers: _createMarker(),
         initialCameraPosition: CameraPosition(
           target: LatLng(_currentLocation!.latitude as double,
@@ -293,6 +345,7 @@ class _RecommendMap extends State<RecommendMap> {
   // マーカーをカスタマイズ
   Set<Marker> _createMarker() {
     final Set<Marker> markers = {}; // スポットに対応したマーカを格納
+
     for (var i = 0; i < (_response.keys.length - 1); i++) {
       String name = _response[i.toString()]['name'];
       double lat = _response[i.toString()]['lat'];
@@ -303,6 +356,7 @@ class _RecommendMap extends State<RecommendMap> {
           Marker(
             markerId: MarkerId(name),
             position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: "目的地「${name}」"),
             icon: (pinDestinationIcon as BitmapDescriptor),
           ),
         );
@@ -311,6 +365,7 @@ class _RecommendMap extends State<RecommendMap> {
           Marker(
             markerId: MarkerId(name),
             position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: name),
             icon: (pinSpotsIcon as BitmapDescriptor),
           ),
         );
@@ -328,6 +383,6 @@ class _RecommendMap extends State<RecommendMap> {
   // スポットのマーカ
   void setSpotsMapPin() async {
     pinSpotsIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 1), 'assets/spots_pin.png');
+        ImageConfiguration(devicePixelRatio: 1), 'assets/destination_pin.png');
   }
 }
