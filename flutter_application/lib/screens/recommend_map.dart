@@ -25,13 +25,13 @@ class _RecommendMap extends State<RecommendMap> {
   Map<String, dynamic> _image = {}; // 写真
   Map<String, dynamic> _review = {}; // レビュー情報
   int _target = 0; // 表示するスポットのID
-  double _distanceInMeters = 0; // 現在地とスポットの距離
+  int _maxDistance = 20; // 次のスポットに移る際の距離
+  double? _distanceInMeters = null; // 現在地とスポットの距離
   Map<String, dynamic> _response = {}; // APIのレスポンス結果
   late StreamSubscription _locationChangedListen; // 位置情報の変化を監視
   LocationData? _currentLocation; // 現在位置
   BitmapDescriptor? pinDestinationIcon; // 目的地のマーカ
   BitmapDescriptor? pinSpotsIcon; // スポットのマーカ
-  int _count = 0;
 
   // APIのレスポンス結果をMapで受け取る
   Future<void> string2Map() async {
@@ -42,20 +42,13 @@ class _RecommendMap extends State<RecommendMap> {
 
   // 対象とする場所の更新を行う
   Future<void> updateTarget() async {
-    setState(() {
-      // _targetがスポット数以下
-      bool ex1 = (_response.keys.length > _target);
-      // スポットと現在地の距離が5m以下
-      print("距離:$_distanceInMeters");
-      bool ex2 = (20 > _distanceInMeters);
-      if (ex1 & ex2) {
-        if (_count == 0) {
-          _count += 1;
-        } else {
-          _target += 1;
-        }
-      }
-    });
+    if (!(_distanceInMeters is Null) &
+        (_response.keys.length > _target) &
+        (_maxDistance > _distanceInMeters!)) {
+      setState(() {
+        _target += 1;
+      });
+    }
   }
 
   // 現在地の取得
@@ -67,6 +60,7 @@ class _RecommendMap extends State<RecommendMap> {
   Future<StreamSubscription<LocationData>> observeLocation() async {
     return _locationService.onLocationChanged
         .listen((LocationData result) async {
+      updateTarget();
       setState(() {
         _currentLocation = result;
         calculationDistance();
@@ -99,13 +93,25 @@ class _RecommendMap extends State<RecommendMap> {
     _review = data["reviews"];
   }
 
+  // 次のスポットまでの距離を返す
+  Widget view_spots_distance() {
+    if (_distanceInMeters is Null) {
+      return Text("~計算中~");
+    } else {
+      return Text(
+        "次のスポットまで\n${_distanceInMeters?.toStringAsFixed(3)}m",
+        style: TextStyle(
+            fontSize: 13, color: Colors.grey[700], fontWeight: FontWeight.bold),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     Future(() async {
       await getLocation();
       _locationChangedListen = await observeLocation();
-      await updateTarget();
     });
     setSpotsMapPin();
     setDestinationMapPin();
@@ -164,15 +170,7 @@ class _RecommendMap extends State<RecommendMap> {
                   ),
                 ),
               ),
-              Center(
-                child: Text(
-                  "次のスポットまで\n${_distanceInMeters.toStringAsFixed(3)}m",
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[700],
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
+              Center(child: view_spots_distance()),
             ],
           ),
         ),
