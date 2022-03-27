@@ -82,20 +82,17 @@ class _RecommendMap extends State<RecommendMap> {
     // 到達点
     double _destLatitude;
     double _destLongitude;
-    _response.forEach(
-      (key, value) async {
-        if (key != "time") {
-          _destLatitude = value["lat"];
-          _destLongitude = value["lng"];
-          LatLng start = LatLng(_originLatitude, _originLongitude);
-          LatLng finish = LatLng(_destLatitude, _destLongitude);
-          PolylineId id = PolylineId(value["name"]);
-          polylines[id] = await _getRoutePolyline(start, finish, id);
-          _originLatitude = _destLatitude;
-          _originLongitude = _destLongitude;
-        }
-      },
-    );
+    for (var i = 0; i < (_response.keys.length - 1); i++) {
+      String name = _response[i.toString()]['name'];
+      _destLatitude = _response[i.toString()]['lat'];
+      _destLongitude = _response[i.toString()]['lng'];
+      LatLng start = LatLng(_originLatitude, _originLongitude);
+      LatLng finish = LatLng(_destLatitude, _destLongitude);
+      PolylineId id = PolylineId(name);
+      polylines[id] = await _getRoutePolyline(start, finish, id);
+      _originLatitude = _destLatitude;
+      _originLongitude = _destLongitude;
+    }
   }
 
   Future<Polyline> _getRoutePolyline(
