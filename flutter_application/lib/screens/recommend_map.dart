@@ -49,7 +49,7 @@ class _RecommendMap extends State<RecommendMap> {
   // 対象とする場所の更新を行う
   Future<void> updateTarget() async {
     if (!(_distanceInMeters is Null) &
-        (_response.keys.length > _target) &
+        (_response.keys.length > (_target + 1)) &
         (_maxDistance > _distanceInMeters!)) {
       setState(() {
         _target += 1;
