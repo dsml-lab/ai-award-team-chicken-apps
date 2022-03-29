@@ -40,6 +40,8 @@ def recommend_function(request):
     return result
 
 
+# {'0': {'name': '寒梅酒造(株)', 'lat': 36.0650049, 'lng': 139.6754501}, 'time': 1310, '1': {'name': 'Bal style えんの蔵 久喜店', 'lat': 36.0673919, 'lng': 139.6754259}, '2': {'name': 'パティスリー・アソルティ', 'lat': 36.0647783, 'lng': 139.6804034}, '3': {'name': '愛宕茶屋', 'lat': 36.0682348, 'lng': 139.6775194}}
+
 def decision_destination(db: object, origin: str, genre: dict, place_time: int):
     # 指定されたジャンルのスポットだけを抽出
     doc = list(itertools.chain.from_iterable([db.where('types', '==', k).get() for k, v in genre.items() if v]))

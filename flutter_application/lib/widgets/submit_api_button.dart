@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/custom_text.dart';
 import 'package:flutter_application/screens/recommend_map.dart';
+import 'package:flutter_application/utils/request_api.dart';
 import 'package:flutter_application/widgets/loading_widght.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,20 +48,9 @@ ElevatedButton SubmitNextScreen(BuildContext context) {
     double _latitude = _currentLocation.latitude as double;
     double _longitude = _currentLocation.longitude as double;
     // サーバーにデータを送り目的地と道中のスポットを取得する
-    Uri url = Uri.parse('http://10.0.2.2:5000/recommend');
-    var headers = {"Content-Type": "application/json", "charset": "utf8"};
     var requestBody = json.encode(
         {"user": _userUid, "latitude": _latitude, "longitude": _longitude});
-    http.Response response =
-        await http.post(url, headers: headers, body: requestBody);
-    String _content;
-    if (response.statusCode != 200) {
-      int statusCode = response.statusCode;
-      _content = "Failed to post $statusCode";
-    } else {
-      _content = response.body;
-    }
-    return _content;
+    return requestAPI(requestBody: requestBody, api: "recommend");
   }
 
   return ElevatedButton(
