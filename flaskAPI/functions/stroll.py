@@ -25,6 +25,8 @@ def stroll_function(request):
     result = json.dumps(result, ensure_ascii=False)
     return result
 
+# {'0': {'name': '寒梅酒造(株)', 'lat': 36.0650049, 'lng': 139.6754501}, '1': {'name': 'Bal style えんの蔵 久喜店', 'lat': 36.0673919, 'lng': 139.6754259}, '2': {'name': 'パティスリー・アソルティ', 'lat': 36.0647783, 'lng': 139.6804034}}
+
 
 def decision_close_spots(db: object, origin: str):
     # 現在地->スポットまでの距離を計算して距離が小さい順に並び替え
