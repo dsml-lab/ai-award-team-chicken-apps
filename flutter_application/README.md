@@ -17,7 +17,7 @@
 
 ### アプリについて
 
-アプリ説明動画([youtube](https://youtu.be/KuQwmeWf6hQ))に限定公開しています。デモアプリはAndroid向けに実装しており、Google Pixel3a(エミュレータ)とAQUOS zero2(実機)で動作確認済です。開発はMacBookProで行っています。
+アプリ説明動画を[youtube](https://youtu.be/YPfbGVHeucs)に限定公開しています。デモアプリはAndroid向けに実装しており、Google Pixel3a(エミュレータ)とAQUOS zero2(実機)で動作確認済です。開発はMacBookProで行っています。
 
 ```text
 ・macOS Big Sur バージョン11.6（MacBook Pro）, メモリ 16 GB 3733 MHz LPDDR4X, 2 GHz クアッドコアIntel Core i5
@@ -56,8 +56,9 @@ flutter_application/
         ├ sign_in_screen.dart ✔︎
         ├ stroll_map.dart ✔︎
         ├ user_info_screen.dart ✔︎
-    ├ utils # Googleアカウントによる認証
+    ├ utils # Googleアカウントによる認証とAPIリクセスト
         ├ authentication.dart ※
+        ├ request_api.dart ✔︎
     ├ widgets # アプリで表示される画面で使用したUIを構築しているパーツ
         ├ google_sign_in_button.dart ✔︎
         ├ header.dart ✔︎
@@ -65,6 +66,7 @@ flutter_application/
         ├ kind_checkboxlist.dart ✔︎
         ├ loading_widght.dart ✔︎
         ├ mode_button.dart ✔︎
+        ├ map_header_button.dart ✔︎
         ├ mode_dialog.dart ✔︎
         ├ submit_api_button.dart ✔︎
         ├ time_textfield.dart ✔︎
@@ -111,6 +113,20 @@ header.dart # ヘッダー
 stroll_map.dart # お散歩モードを選んだ際の遷移先(GoogleMap上に現在地を表示してトラッキングを行う)
 ```
 
+#### お散歩モードのマップ画面
+
+<img src="../image/お散歩モードのマップ画面.png" width="150px"> 
+
+別途実装した[StrollAPI](../flaskAPI/README.md)によって現在地から近い魅力スポットを3つ、[赤いピン](./assets/pin.png)でGoogleMAP上に表示します。現在地から最も近いスポットを上部のオレンジ枠に表示しています。また、現在地からスポットまでの距離をリアルタイムで表示します。上部のオレンジ枠はボタンになっており、タッチすることで表示されているスポットの情報を閲覧することができます。デモでは観光・飲食店・景観に該当する久喜市の約80スポットが登録されています。
+
+<該当するプログラム>
+
+```text
+stroll_map.dart # お散歩モードのマップ画面を描画する
+request_api.dart # APIリクエストの制御
+map_header_button.dart # お店の紹介文を表示するためのボタン
+```
+
 #### 推薦モード
 
 <img src="../image/推薦モードの入力画面.png" width="150px"> 
@@ -124,6 +140,7 @@ recommend_setting.dart # 入力画面
 kind_checkboxlist.dart # ジャンル別のチェックボックスリストを実装
 submit_api_button.dart # 入力した情報をAPIに送り結果を受け取るまでローディングし、その後に遷移する
 time_textfield.dart # 目的地の時間と寄り道にかかる時間を入力する
+request_api.dart # APIリクエストの制御
 ```
 
 #### 推薦モードのマップ画面
@@ -135,14 +152,15 @@ time_textfield.dart # 目的地の時間と寄り道にかかる時間を入力�
 <該当するプログラム>
 
 ```text
-google_maps_flutter.dart' # 推薦モードのマップ画面を実装
+google_maps_flutter.dart # 推薦モードのマップ画面を実装
+map_header_button.dart # お店の紹介文を表示するためのボタン
 ```
 
 #### スポットの情報
 
 <img src="../image/レビュ画面.png" width="150px"> 
 
-画面ではなく、ポップアップで表示されるものになっており、最も近いスポットの情報を閲覧することができます。また、お店の紹介文には**自治体だからもつ紹介文**と**声レビュー**が載っています。デモでは[埼玉県が提供するオープンデータ](https://opendata.pref.saitama.lg.jp/)を元にデータベースを構築しており、紹介文は実際に自治体が提供している紹介文になっています。[RecommendAPIのREADME.md](../flaskAPI/../README.md)にデータベースの詳細を記載しています。声レビューは、Google Cloud  Platform が提供しているPlace APIで取得したスポットのクチコミをFlutterのパッケージ[flutter_tts](https://pub.dev/packages/flutter_tts)で音声合成しており、タッチすることで音声が流れます。
+画面ではなく、ポップアップで表示されるものになっており、最も近いスポットの情報を閲覧することができます。また、お店の紹介文には**自治体だからもつ紹介文**と**声レビュー**が載っています。デモでは[埼玉県が提供するオープンデータ](https://opendata.pref.saitama.lg.jp/)を元にデータベースを構築しており、紹介文は実際に自治体が提供している紹介文になっています。[flaskAPIのREADME.md](../flaskAPI/README.md)にデータベースの詳細を記載しています。声レビューは、Google Cloud  Platform が提供しているPlace APIで取得したスポットのクチコミをFlutterのパッケージ[flutter_tts](https://pub.dev/packages/flutter_tts)で音声合成しており、タッチすることで音声が流れます。
 
 <該当するプログラム>
 
@@ -168,6 +186,7 @@ cloud_firestore: ^3.1.10 # firebase storeを利用
 http: ^0.13.4 # http通信
 geolocator: ^8.2.0 # 距離計算
 flutter_tts: ^3.3.3 # TTS
+flutter_polyline_points: ^1.0.0 # Google Mapのルート表示
 ```
 
 ## 実装する上で参考にしたサイト
